@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class SentimentService {
     private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-    private static final String API_KEY = "AIzaSyAy-U43S1QbVjcNMSPEkWx3xUUq_qpHy8Q"; // Thay API Key thật của bạn
+    private static final String API_KEY = "My_Secret_API_Key"; // Thay API Key thật của bạn
 
     public interface SentimentCallback {
         void onSuccess(String sentiment);
