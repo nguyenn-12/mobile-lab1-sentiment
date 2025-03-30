@@ -5,8 +5,9 @@ import org.json.*;
 import java.io.IOException;
 
 public class SentimentService {
-    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-    private static final String API_KEY = "My_Secret_API_Key"; // Thay API Key thật của bạn
+    //private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+    private static final String API_URL = "https://499d-34-87-29-211.ngrok-free.app/predict";
+    //private static final String API_KEY = "AIzaSyAy-U43S1QbVjcNMSPEkWx3xUUq_qpHy8Q"; // Thay API Key thật của bạn
 
     public interface SentimentCallback {
         void onSuccess(String sentiment);
@@ -17,7 +18,7 @@ public class SentimentService {
         OkHttpClient client = new OkHttpClient();
 
         JSONObject requestBody = new JSONObject();
-        try {
+        try { /**
             JSONArray contentsArray = new JSONArray();
             JSONObject contentObject = new JSONObject();
             JSONArray partsArray = new JSONArray();
@@ -29,7 +30,8 @@ public class SentimentService {
             partsArray.put(textObject);
             contentObject.put("parts", partsArray);
             contentsArray.put(contentObject);
-            requestBody.put("contents", contentsArray);
+            requestBody.put("contents", contentsArray); **/
+            requestBody.put("text", text);
         } catch (JSONException e) {
             callback.onFailure("Error: JSON formatting failed");
             return;
@@ -38,7 +40,7 @@ public class SentimentService {
         RequestBody body = RequestBody.create(requestBody.toString(), MediaType.get("application/json"));
 
         Request request = new Request.Builder()
-                .url(API_URL + "?key=" + API_KEY)
+                .url(API_URL) //.url(API_URL + "?key=" + API_KEY)
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -60,6 +62,7 @@ public class SentimentService {
                     String responseData = response.body().string();
                     JSONObject jsonResponse = new JSONObject(responseData);
 
+                    /**
                     if (jsonResponse.has("candidates") && jsonResponse.getJSONArray("candidates").length() > 0) {
                         String sentiment = jsonResponse.getJSONArray("candidates")
                                 .getJSONObject(0)
@@ -71,6 +74,17 @@ public class SentimentService {
 
                         if (sentiment.equals("positive") || sentiment.equals("negative")) {
                             callback.onSuccess(sentiment);
+                        } else {
+                            callback.onFailure("Error: Unexpected sentiment result.");
+                        }
+                    } else {
+                        callback.onFailure("Error: Invalid API response format.");
+                    }**/
+                    if (jsonResponse.has("sentiment")) {
+                        String sentiment = jsonResponse.getString("sentiment").trim().toLowerCase();
+
+                        if (sentiment.equals("positive") || sentiment.equals("negative")) {
+                            callback.onSuccess(sentiment);  // Trả về kết quả
                         } else {
                             callback.onFailure("Error: Unexpected sentiment result.");
                         }
